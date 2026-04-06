@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
 import { Pasantia } from './pasantia.entity';
 import { Estudiante } from '../../usuarios/entities/estudiante.entity';
 import { Tutor } from '../../usuarios/entities/tutor.entity';
@@ -47,4 +47,13 @@ export class Inscripcion {
   @ManyToOne(() => JefePasantes, { nullable: true })
   @JoinColumn({ name: 'id_jefe' })
   jefe: JefePasantes;
+
+  @CreateDateColumn({ name: 'created_at' })
+  created_at: Date;
+
+  @UpdateDateColumn({ name: 'updated_at' })
+  updated_at: Date;
+
+  @DeleteDateColumn({ name: 'deleted_at', nullable: true })
+  deleted_at: Date;
 }
