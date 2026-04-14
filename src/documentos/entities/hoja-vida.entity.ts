@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToOne, OneToMany, JoinColumn } from 'typeorm';
 import { Estudiante } from '../../usuarios/entities/estudiante.entity';
+import { Habilidad } from './habilidad.entity';
 
 @Entity('hoja_vida')
 export class HojaVida {
@@ -15,4 +16,7 @@ export class HojaVida {
   @OneToOne(() => Estudiante)
   @JoinColumn({ name: 'id_estudiante' })
   estudiante: Estudiante;
+
+  @OneToMany(() => Habilidad, (habilidad) => habilidad.hoja_vida)
+  habilidades: Habilidad[];
 }

@@ -9,9 +9,13 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
-
+.kiro/
 # OS
 .DS_Store
+.Spotlight-V100
+.Trashes
+lost+found
+
 
 # Tests
 /coverage

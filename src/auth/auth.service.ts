@@ -19,6 +19,10 @@ export class AuthService {
     return null;
   }
 
+  async getProfile(userId: number) {
+    return this.usuariosService.findOne(userId);
+  }
+
   async login(user: any) {
     const payload = { 
       email: user.email, 
