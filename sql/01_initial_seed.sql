@@ -1,4 +1,5 @@
 -- 01_initial_seed.sql
+SET client_encoding = 'UTF8';
 -- Script de poblado inicial para el Sistema de Pasantías
 -- Enfoque: Idempotencia y Calidad de Datos
 
@@ -32,6 +33,14 @@ ALTER SEQUENCE informe_final_id_informe_seq RESTART WITH 1;
 ALTER SEQUENCE hoja_vida_id_hoja_vida_seq RESTART WITH 1;
 ALTER SEQUENCE habilidad_id_habilidad_seq RESTART WITH 1;
 ALTER SEQUENCE bitacora_id_bitacora_seq RESTART WITH 1;
+ALTER SEQUENCE informacion_empresa_id_seq RESTART WITH 1;
+
+-- 2.5 INSERTAR INFORMACIÓN INSTITUCIONAL
+INSERT INTO "informacion_empresa" ("mision", "vision", "objetivos", "quienes_somos") VALUES
+('Nuestra misión es gestionar y promover programas de pasantías de alta calidad que integren el conocimiento teórico con la práctica profesional, contribuyendo al desarrollo integral de los estudiantes de la UMSA y fortaleciendo el vínculo con el sector productivo y social.', 
+ 'Ser el referente nacional en la gestión de talento joven, reconocidos por nuestra eficiencia en la vinculación académica-empresarial y por impulsar la empleabilidad de excelencia.', 
+ 'Estructuramos cada paso del proceso para garantizar que tu transición al mercado laboral sea exitosa y significativa.', 
+ 'La Unidad de Gestión de Pasantías de la UMSA es el órgano encargado de articular las necesidades del sector productivo con el talento emergente. Con más de dos décadas de experiencia, aseguramos que cada pasantía no sea solo un requisito, sino una experiencia transformadora.');
 
 -- 3. INSERTAR EMPRESAS (20 registros)
 INSERT INTO "empresa" ("nombre", "rubro", "direccion", "telefono") VALUES
