@@ -1,4 +1,4 @@
-import { Controller, Post, Get, UseGuards, Request, Body } from '@nestjs/common';
+import { Controller, Post, Get, Patch, UseGuards, Request, Body } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guards/local-auth.guard';
@@ -43,5 +43,60 @@ export class AuthController {
   @ApiResponse({ status: 401, description: 'Token inválido o ausente' })
   async getProfile(@Request() req: any) {
     return this.authService.getProfile(req.user.userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('logout')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Cerrar sesión del usuario' })
+  @ApiResponse({ status: 200, description: 'Sesión cerrada exitosamente' })
+  @ApiResponse({ status: 401, description: 'Token inválido o ausente' })
+  async logout(@Request() req: any) {
+    return { message: 'Sesión cerrada correctamente', userId: req.user.userId };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('gerente/dashboard')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Obtener dashboard del gerente con métricas de su empresa' })
+  @ApiResponse({ status: 200, description: 'Dashboard del gerente' })
+  @ApiResponse({ status: 401, description: 'Token inválido o ausente' })
+  @ApiResponse({ status: 403, description: 'Acceso restringido a gerentes' })
+  async getGerenteDashboard(@Request() req: any) {
+    // Verificar que es un gerente
+    if (req.user.tipo !== 'gerente' && req.user.tipo !== 'GERENTE') {
+      return { message: 'Acceso restringido a gerentes' };
+    }
+    return this.authService.getGerenteDashboard(req.user.userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('gerente/empresa')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Obtener información de la empresa del gerente' })
+  @ApiResponse({ status: 200, description: 'Datos de la empresa' })
+  @ApiResponse({ status: 401, description: 'Token inválido o ausente' })
+  async getGerenteEmpresa(@Request() req: any) {
+    return this.authService.getGerenteEmpresa(req.user.userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('gerente/empresa')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Actualizar información de la empresa del gerente' })
+  @ApiResponse({ status: 200, description: 'Empresa actualizada' })
+  @ApiResponse({ status: 401, description: 'Token inválido o ausente' })
+  async updateGerenteEmpresa(@Request() req: any, @Body() body: any) {
+    return this.authService.updateGerenteEmpresa(req.user.userId, body);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('gerente/equipo')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Obtener equipo de la empresa del gerente' })
+  @ApiResponse({ status: 200, description: 'Lista de jefes de pasantes' })
+  @ApiResponse({ status: 401, description: 'Token inválido o ausente' })
+  async getGerenteEquipo(@Request() req: any) {
+    return this.authService.getGerenteEquipo(req.user.userId);
   }
 }

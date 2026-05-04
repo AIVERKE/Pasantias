@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
+import { Pasantia } from '../../pasantias/entities/pasantia.entity';
 
 @Entity('empresa')
 export class Empresa {
@@ -16,6 +17,9 @@ export class Empresa {
 
   @Column({ type: 'varchar', length: 20 })
   telefono: string;
+
+  @OneToMany(() => Pasantia, (pasantia) => pasantia.empresa)
+  pasantias: Pasantia[];
 
   @CreateDateColumn({ name: 'created_at' })
   created_at: Date;

@@ -5,6 +5,9 @@ export class InformacionEmpresa {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column({ name: 'logo_url', type: 'varchar', length: 500, nullable: true })
+  logo_url: string;
+
   @Column({ type: 'varchar' })
   mision: string;
 

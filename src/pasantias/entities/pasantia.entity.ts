@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, JoinColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
 import { Empresa } from '../../empresas/entities/empresa.entity';
+import { Inscripcion } from '../../inscripciones/entities/inscripcion.entity';
 
 export enum EstadoPasantia {
   PENDIENTE = 'pendiente',
@@ -35,6 +36,9 @@ export class Pasantia {
   @ManyToOne(() => Empresa)
   @JoinColumn({ name: 'id_empresa' })
   empresa: Empresa;
+
+  @OneToMany(() => Inscripcion, (inscripcion) => inscripcion.pasantia)
+  inscripciones: Inscripcion[];
 
   @CreateDateColumn({ name: 'created_at' })
   created_at: Date;
