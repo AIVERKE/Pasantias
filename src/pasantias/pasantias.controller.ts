@@ -14,12 +14,14 @@ export class PasantiasController {
   @ApiOperation({ summary: 'Listar pasantías con filtros opcionales' })
   @ApiQuery({ name: 'estado', enum: EstadoPasantia, required: false })
   @ApiQuery({ name: 'empresa_id', required: false, type: Number })
+  @ApiQuery({ name: 'area', required: false, type: String })
   @ApiResponse({ status: 200, description: 'Lista de pasantías' })
   findAll(
     @Query('estado') estado?: EstadoPasantia,
     @Query('empresa_id') empresaId?: number,
+    @Query('area') area?: string,
   ) {
-    return this.pasantiasService.findAll(estado, empresaId ? +empresaId : undefined);
+    return this.pasantiasService.findAll(estado, empresaId ? +empresaId : undefined, area);
   }
 
   @Get(':id')

@@ -1,6 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, JoinColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, JoinColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, ManyToMany, JoinTable } from 'typeorm';
 import { Empresa } from '../../empresas/entities/empresa.entity';
 import { Inscripcion } from '../../inscripciones/entities/inscripcion.entity';
+import { Habilidad } from '../../catalogos/entities/habilidad.entity';
 
 export enum EstadoPasantia {
   PENDIENTE = 'pendiente',
@@ -39,6 +40,23 @@ export class Pasantia {
 
   @OneToMany(() => Inscripcion, (inscripcion) => inscripcion.pasantia)
   inscripciones: Inscripcion[];
+
+  @Column({ type: 'varchar', length: 100, nullable: true })
+  area: string;
+
+  @Column({ type: 'varchar', length: 150, nullable: true })
+  horario_laboral: string;
+
+  @Column({ type: 'int', default: 0 })
+  cupos_totales: number;
+
+  @ManyToMany(() => Habilidad)
+  @JoinTable({
+    name: 'pasantia_habilidad',
+    joinColumn: { name: 'id_pasantia', referencedColumnName: 'id_pasantia' },
+    inverseJoinColumn: { name: 'id_habilidad', referencedColumnName: 'id_habilidad' },
+  })
+  habilidades: Habilidad[];
 
   @CreateDateColumn({ name: 'created_at' })
   created_at: Date;

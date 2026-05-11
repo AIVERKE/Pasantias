@@ -15,10 +15,11 @@ export class PasantiasService {
     private readonly empresaRepository: Repository<Empresa>,
   ) {}
 
-  findAll(estado?: EstadoPasantia, empresaId?: number): Promise<Pasantia[]> {
+  findAll(estado?: EstadoPasantia, empresaId?: number, area?: string): Promise<Pasantia[]> {
     const where: any = {};
     if (estado) where.estado = estado;
     if (empresaId) where.empresa = { id_empresa: empresaId };
+    if (area) where.area = area;
     return this.pasantiaRepository.find({
       where,
       relations: ['empresa'],

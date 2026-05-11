@@ -8,7 +8,7 @@ export enum NivelHabilidad {
   EXPERTO = 'experto',
 }
 
-@Entity('habilidad')
+@Entity('habilidad_old')
 export class Habilidad {
   @PrimaryGeneratedColumn()
   id_habilidad: number;

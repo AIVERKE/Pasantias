@@ -8,6 +8,9 @@ import { Tutor } from '../../usuarios/entities/tutor.entity';
 import { Gerente } from '../../usuarios/entities/gerente.entity';
 import { JefePasantes } from '../../usuarios/entities/jefe-pasantes.entity';
 import { SuperUsuario } from '../../usuarios/entities/super-usuario.entity';
+import { Pasantia, EstadoPasantia } from '../../pasantias/entities/pasantia.entity';
+import { Inscripcion, EstadoInscripcion, EstadoEjecucion } from '../../pasantias/entities/inscripcion.entity';
+import { Actividad, EstadoSemaforo } from '../../pasantias/entities/actividad.entity';
 
 export default class InitialSeeder implements Seeder {
   async run(
@@ -24,6 +27,9 @@ export default class InitialSeeder implements Seeder {
     const gerenteRepo = dataSource.getRepository(Gerente);
     const jefeRepo = dataSource.getRepository(JefePasantes);
     const superUsuarioRepo = dataSource.getRepository(SuperUsuario);
+    const pasantiaRepo = dataSource.getRepository(Pasantia);
+    const inscripcionRepo = dataSource.getRepository(Inscripcion);
+    const actividadRepo = dataSource.getRepository(Actividad);
 
     // ─── 1. Empresas ─────────────────────────────────────────────────────────
     console.log('🏢 Insertando empresas...');
@@ -222,6 +228,107 @@ export default class InitialSeeder implements Seeder {
           registro_universitario: data.registro_universitario,
         }),
       );
+    }
+
+    // ─── 7. Pasantías ────────────────────────────────────────────────────────
+    console.log('🚀 Insertando pasantías de prueba...');
+    
+    const pasantiasGuardadas = await pasantiaRepo.save([
+      pasantiaRepo.create({
+        titulo: 'Desarrollador Web Frontend (Vue.js)',
+        descripcion: 'Buscamos un pasante entusiasta para apoyar en el desarrollo de interfaces usando Vue 3 y TailwindCSS.',
+        area: 'sistemas',
+        fecha_inicio: new Date('2026-06-01'),
+        fecha_fin: new Date('2026-12-01'),
+        estado: EstadoPasantia.PENDIENTE,
+        horario_laboral: 'Lunes a Viernes, 08:30 a 12:30',
+        cupos_totales: 3,
+        empresa: techBolivia,
+      }),
+      pasantiaRepo.create({
+        titulo: 'Analista de Datos Junior',
+        descripcion: 'Oportunidad para aplicar conocimientos de bases de datos, Python y herramientas de BI en proyectos reales.',
+        area: 'datos',
+        fecha_inicio: new Date('2026-06-15'),
+        fecha_fin: new Date('2026-11-15'),
+        estado: EstadoPasantia.PENDIENTE,
+        horario_laboral: 'Lunes a Viernes, 14:00 a 18:00',
+        cupos_totales: 2,
+        empresa: grupoNorte,
+      }),
+      pasantiaRepo.create({
+        titulo: 'Asistente de Redes y Soporte',
+        descripcion: 'Prácticas pre-profesionales para dar soporte técnico y mantenimiento a infraestructura de red local.',
+        area: 'redes',
+        fecha_inicio: new Date('2026-07-01'),
+        fecha_fin: new Date('2026-10-01'),
+        estado: EstadoPasantia.EN_CURSO,
+        horario_laboral: 'Lunes a Sábado, 09:00 a 13:00',
+        cupos_totales: 1,
+        empresa: techBolivia,
+      }),
+      pasantiaRepo.create({
+        titulo: 'Pasante de Ciberseguridad',
+        descripcion: 'Apoyo en escaneo de vulnerabilidades y elaboración de informes de seguridad en redes.',
+        area: 'ciberseguridad',
+        fecha_inicio: new Date('2026-08-01'),
+        fecha_fin: new Date('2026-12-31'),
+        estado: EstadoPasantia.PENDIENTE,
+        horario_laboral: 'Lunes a Viernes, 14:00 a 18:00',
+        cupos_totales: 2,
+        empresa: techBolivia,
+      }),
+    ]);
+
+    // ─── 8. Inscripción y Bitácora de Prueba ─────────────────────────────────
+    console.log('📝 Insertando inscripción y bitácora de prueba...');
+    
+    // Obtenemos a la estudiante Lucía
+    const lucia = await estudianteRepo.findOne({ where: { registro_universitario: 'UMSA-2020-001' }, relations: ['usuario'] });
+    const pasantiaEnCurso = pasantiasGuardadas[2]; // Asistente de Redes
+    
+    if (lucia) {
+      const jefe = await jefeRepo.findOne({ where: {} });
+      const nuevaInscripcion = new Inscripcion();
+      nuevaInscripcion.estudiante = lucia;
+      nuevaInscripcion.pasantia = pasantiaEnCurso;
+      nuevaInscripcion.estado = EstadoInscripcion.APROBADA;
+      nuevaInscripcion.estado_ejecucion = EstadoEjecucion.EN_CURSO;
+      nuevaInscripcion.fecha_inscripcion = new Date();
+      nuevaInscripcion.fecha_inicio_periodo = new Date('2026-07-01');
+      nuevaInscripcion.fecha_fin_periodo = new Date('2026-10-01');
+      if (jefe) nuevaInscripcion.jefe = jefe;
+      
+      const inscripcionPrueba = await inscripcionRepo.save(nuevaInscripcion);
+
+      // Crear 3 actividades de prueba
+      const act1 = new Actividad();
+      act1.titulo_actividad = 'Configuración inicial del entorno';
+      act1.descripcion_actividad = 'Instalar herramientas de monitoreo en el servidor local.';
+      act1.fecha_asignacion = new Date('2026-07-05');
+      act1.estado_semaforo = EstadoSemaforo.COMPLETADA;
+      act1.nota_actividad = 90;
+      act1.inscripcion = inscripcionPrueba;
+      if (jefe) act1.jefe_asignador = jefe;
+
+      const act2 = new Actividad();
+      act2.titulo_actividad = 'Revisión de logs semanales';
+      act2.descripcion_actividad = 'Analizar logs del firewall y reportar anomalías.';
+      act2.fecha_asignacion = new Date('2026-07-12');
+      act2.estado_semaforo = EstadoSemaforo.COMPLETADA;
+      act2.nota_actividad = 85;
+      act2.inscripcion = inscripcionPrueba;
+      if (jefe) act2.jefe_asignador = jefe;
+
+      const act3 = new Actividad();
+      act3.titulo_actividad = 'Mapeo de red local';
+      act3.descripcion_actividad = 'Crear diagrama de la red local actualizada con las nuevas IPs.';
+      act3.fecha_asignacion = new Date('2026-07-19');
+      act3.estado_semaforo = EstadoSemaforo.EN_CURSO;
+      act3.inscripcion = inscripcionPrueba;
+      if (jefe) act3.jefe_asignador = jefe;
+
+      await actividadRepo.save([act1, act2, act3]);
     }
 
     console.log('✅ Seed completado exitosamente.');

@@ -32,6 +32,14 @@ export class InscripcionesService {
     });
   }
 
+  findByEstudiante(estudianteId: number): Promise<Inscripcion[]> {
+    return this.inscripcionRepository.find({
+      where: { estudiante: { id_estudiante: estudianteId } },
+      relations: ['pasantia', 'pasantia.empresa'],
+      order: { created_at: 'DESC' },
+    });
+  }
+
   async create(dto: CreateInscripcionDto): Promise<Inscripcion> {
     const estudiante = await this.estudianteRepository.findOne({ where: { id_estudiante: dto.id_estudiante } });
     if (!estudiante) throw new NotFoundException(`Estudiante con ID ${dto.id_estudiante} no encontrado`);
@@ -67,5 +75,11 @@ export class InscripcionesService {
     inscripcion.tutor = tutor;
     inscripcion.jefe = jefe;
     return this.inscripcionRepository.save(inscripcion);
+  }
+
+  async remove(id: number): Promise<void> {
+    const inscripcion = await this.inscripcionRepository.findOne({ where: { id_inscripcion: id } });
+    if (!inscripcion) throw new NotFoundException(`Inscripción con ID ${id} no encontrada`);
+    await this.inscripcionRepository.remove(inscripcion);
   }
 }

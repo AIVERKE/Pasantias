@@ -11,6 +11,12 @@ export enum EstadoInscripcion {
   COMPLETADA = 'completada',
 }
 
+export enum EstadoEjecucion {
+  EN_CURSO = 'en_curso',
+  FINALIZADA = 'finalizada',
+  ABANDONADA = 'abandonada',
+}
+
 @Entity('inscripcion')
 export class Inscripcion {
   @PrimaryGeneratedColumn()
@@ -31,6 +37,16 @@ export class Inscripcion {
     default: EstadoInscripcion.PENDIENTE,
   })
   estado: EstadoInscripcion;
+
+  @Column({
+    type: 'enum',
+    enum: EstadoEjecucion,
+    nullable: true,
+  })
+  estado_ejecucion: EstadoEjecucion;
+
+  @Column({ type: 'text', nullable: true })
+  comentario_jefe: string;
 
   @ManyToOne(() => Estudiante)
   @JoinColumn({ name: 'id_estudiante' })

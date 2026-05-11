@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Patch, Body, Param, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Body, Param, ParseIntPipe } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { InscripcionesService } from './inscripciones.service';
 import { CreateInscripcionDto } from './dto/create-inscripcion.dto';
@@ -16,6 +16,14 @@ export class InscripcionesController {
   @ApiResponse({ status: 200, description: 'Lista de inscripciones' })
   findByPasantia(@Param('id', ParseIntPipe) id: number) {
     return this.inscripcionesService.findByPasantia(id);
+  }
+
+  @Get('estudiante/:id')
+  @ApiOperation({ summary: 'Listar inscripciones de un estudiante' })
+  @ApiParam({ name: 'id', description: 'ID del estudiante' })
+  @ApiResponse({ status: 200, description: 'Lista de inscripciones' })
+  findByEstudiante(@Param('id', ParseIntPipe) id: number) {
+    return this.inscripcionesService.findByEstudiante(id);
   }
 
   @Post()
@@ -42,5 +50,14 @@ export class InscripcionesController {
   @ApiResponse({ status: 404, description: 'Inscripción, tutor o jefe no encontrado' })
   asignarSupervisores(@Param('id', ParseIntPipe) id: number, @Body() dto: AsignarSupervisoresDto) {
     return this.inscripcionesService.asignarSupervisores(id, dto);
+  }
+
+  @Delete(':id')
+  @ApiOperation({ summary: 'Eliminar una inscripción (Cancelar postulación)' })
+  @ApiParam({ name: 'id', description: 'ID de la inscripción' })
+  @ApiResponse({ status: 200, description: 'Inscripción eliminada' })
+  @ApiResponse({ status: 404, description: 'Inscripción no encontrada' })
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.inscripcionesService.remove(id);
   }
 }

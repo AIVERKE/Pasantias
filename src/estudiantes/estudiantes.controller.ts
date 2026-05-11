@@ -30,6 +30,13 @@ export class EstudiantesController {
     return this.estudiantesService.findOne(id);
   }
 
+  @Get(':id/dashboard')
+  @ApiOperation({ summary: 'Obtener resumen del dashboard del estudiante' })
+  @ApiParam({ name: 'id', description: 'ID del estudiante' })
+  getDashboardResumen(@Param('id', ParseIntPipe) id: number) {
+    return this.estudiantesService.getDashboardResumen(id);
+  }
+
   @Post()
   @ApiOperation({ summary: 'Crear perfil de estudiante para un usuario existente' })
   @ApiResponse({ status: 201, description: 'Perfil de estudiante creado' })

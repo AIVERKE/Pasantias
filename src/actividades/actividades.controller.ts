@@ -17,6 +17,14 @@ export class ActividadesController {
     return this.actividadesService.findByPasantia(id);
   }
 
+  @Get('inscripcion/:id')
+  @ApiOperation({ summary: 'Listar actividades de la bitácora de una inscripción' })
+  @ApiParam({ name: 'id', description: 'ID de la inscripción' })
+  @ApiResponse({ status: 200, description: 'Lista de actividades y promedio global' })
+  findByInscripcion(@Param('id', ParseIntPipe) id: number) {
+    return this.actividadesService.findByInscripcion(id);
+  }
+
   @Post()
   @ApiOperation({ summary: 'Crear una actividad para una pasantía (estado inicial: CON_CUPOS)' })
   @ApiResponse({ status: 201, description: 'Actividad creada' })

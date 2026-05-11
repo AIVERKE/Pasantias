@@ -1,6 +1,6 @@
 import { IsDateString, IsEnum, IsOptional, IsString } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { EstadoActividad } from '../entities/actividad.entity';
+import { EstadoSemaforo } from '../entities/actividad.entity';
 
 export class UpdateActividadDto {
   @ApiPropertyOptional({ example: 'Reunión de cierre' })
@@ -13,8 +13,8 @@ export class UpdateActividadDto {
   @IsDateString()
   fecha?: string;
 
-  @ApiPropertyOptional({ enum: EstadoActividad, example: EstadoActividad.CERRADA })
+  @ApiPropertyOptional({ enum: EstadoSemaforo, example: EstadoSemaforo.COMPLETADA })
   @IsOptional()
-  @IsEnum(EstadoActividad)
-  estado?: EstadoActividad;
+  @IsEnum(EstadoSemaforo)
+  estado?: EstadoSemaforo;
 }
